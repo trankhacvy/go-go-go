@@ -1,13 +1,17 @@
 package posts
 
-import(
-	"github.com/jinzhu/gorm"
+import (
+	"time"
 )
 
 type Post struct {
-	gorm.Model
-	Content string
-	UserID uint
+	ID      uint `json:"id"`
+	Content string `json:"content"`
+	UserID  uint `json:"userId"`
+
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
 }
 
 func (Post) TableName() string {

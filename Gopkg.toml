@@ -48,3 +48,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[metadata.heroku]
+  root-package = "https://github.com/Levi-ackerman/go-go-go"
+  go-version = "1.13"
+#  install = [ "./..." ]
+[[constraint]]
+  name = "github.com/go-playground/locales"
+  version = "0.13.0"

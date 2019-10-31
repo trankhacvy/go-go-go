@@ -10,11 +10,12 @@
   version = "v3.2.0"
 
 [[projects]]
-  digest = "1:e1cbe9ce835f515ce57500b8db6b94f399650bea2ddfac59f9b05d98db77a96d"
+  digest = "1:b61b7f500540674440190b5e959abcb6cd1e67255ef76d51a81dd8852cc99277"
   name = "github.com/go-playground/locales"
   packages = [
     ".",
     "currency",
+    "en",
   ]
   pruneopts = "UT"
   revision = "9f105231d3a5f6877a2bf8321dfa15ea6f844b1b"
@@ -64,6 +65,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23d116af351c84513e1946b527c88823e476be13"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:803b281410ec195645c782ddb9cb029d43c2855d4b7824ea31104985b507a458"
   name = "github.com/leodido/go-urn"
   packages = ["."]
@@ -91,9 +100,12 @@
   version = "v1.6.5"
 
 [[projects]]
-  digest = "1:3a8ecdedfd4149826ed0146acd8b8b1d5f7493e2cd642ee6c902234f6e6434fd"
+  digest = "1:0524fa1aa75fb90706ed52dc6e99b8db5fc40f4c563b16f68147dcbf120daeb6"
   name = "gopkg.in/go-playground/validator.v9"
-  packages = ["."]
+  packages = [
+    ".",
+    "translations/en",
+  ]
   pruneopts = "UT"
   revision = "cd1bd581694a11c089aea885a26247c5f783a4cf"
   version = "v9.30.0"
@@ -103,11 +115,15 @@
   analyzer-version = 1
   input-imports = [
     "github.com/dgrijalva/jwt-go",
+    "github.com/go-playground/locales/en",
+    "github.com/go-playground/universal-translator",
     "github.com/gorilla/mux",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
+    "github.com/joho/godotenv",
     "golang.org/x/crypto/bcrypt",
     "gopkg.in/go-playground/validator.v9",
+    "gopkg.in/go-playground/validator.v9/translations/en",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

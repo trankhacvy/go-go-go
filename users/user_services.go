@@ -3,6 +3,7 @@ package users
 import (
 	"errors"
 	"os"
+	// "fmt"
 
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
@@ -37,7 +38,7 @@ func (s *UserServices) Register(user *User) (bool, error) {
 func (s *UserServices) Login(username, password string) (*User, error) {
 
 	user := s.repo.FindByUsername(username)
-	if user == nil {
+	if user == nil || user.ID == 0 {
 		return nil, errors.New("Invalid Username")
 	}
 

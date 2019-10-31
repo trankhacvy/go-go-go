@@ -3,10 +3,12 @@ package users
 import (
 	"encoding/json"
 	"fmt"
-	"go-go-go/utils"
 	"net/http"
 	"strconv"
 
+	"github.com/Levi-ackerman/go-go-go/utils"
+
+	ut "github.com/go-playground/universal-translator"
 	"github.com/gorilla/mux"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -15,20 +17,22 @@ type AuthenticationController struct {
 	services   *UserServices
 	validators *validator.Validate
 	router     *mux.Router
+	trans      ut.Translator
 }
 
-func NewAuthenticationController(r *mux.Router, s *UserServices, v *validator.Validate) *AuthenticationController {
+func NewAuthenticationController(r *mux.Router, s *UserServices, v *validator.Validate, t ut.Translator) *AuthenticationController {
 	return &AuthenticationController{
 		services:   s,
 		validators: v,
 		router:     r,
+		trans:      t,
 	}
 }
 
 func (controller *AuthenticationController) Register() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		registerParams := RegisterValidator{}
-		
+
 		if err := json.NewDecoder(r.Body).Decode(&registerParams); err != nil {
 			utils.Respond(w, utils.Message(http.StatusBadRequest, err.Error()))
 			return
@@ -37,16 +41,22 @@ func (controller *AuthenticationController) Register() http.Handler {
 		fmt.Println("Register handler", registerParams)
 
 		if err := controller.validators.Struct(registerParams); err != nil {
-			utils.Respond(w, utils.Message(http.StatusBadRequest, err.Error()))
+
+			var errStr string
+			for _, e := range err.(validator.ValidationErrors) {
+				errStr += fmt.Sprintf("%s%s", e.Translate(controller.trans), "\n")
+			}
+
+			utils.Respond(w, utils.Message(http.StatusBadRequest, errStr))
 			return
 		}
 
 		user := User{
-			Username: registerParams.Username,
-			Password: registerParams.Password,
-			Email: registerParams.Email,
+			Username:  registerParams.Username,
+			Password:  registerParams.Password,
+			Email:     registerParams.Email,
 			Firstname: registerParams.Firstname,
-			Lastname: registerParams.Lastname,
+			Lastname:  registerParams.Lastname,
 		}
 
 		_, err := controller.services.Register(&user)

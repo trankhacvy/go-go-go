@@ -2,11 +2,14 @@ package db
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"go-go-go/users"
-	"go-go-go/posts"
 	"os"
+
+	"github.com/Levi-ackerman/go-go-go/posts"
+	"github.com/Levi-ackerman/go-go-go/users"
+	"github.com/jinzhu/gorm"
+
+	// _ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var db *gorm.DB
@@ -21,12 +24,14 @@ func Init() {
 	dbName := os.Getenv("db_name")
 	dbDriver := os.Getenv("db_type")
 
-	dbUri := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPass, dbHost, dbPort, dbName)
+	// dbUri := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPass, dbHost, dbPort, dbName)
+	dbUri := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s", dbHost, dbPort, dbUser, dbName, dbPass)
 	fmt.Println(dbUri)
 
 	db, err = gorm.Open(dbDriver, dbUri)
+	db.LogMode(true)
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 	fmt.Println("connect to db success")
 	db.AutoMigrate(&users.User{}, &posts.Post{})

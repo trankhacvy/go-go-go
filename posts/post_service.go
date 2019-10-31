@@ -1,10 +1,7 @@
 package posts
 
 import (
-	// "errors"
-	// "github.com/dgrijalva/jwt-go"
-	// "golang.org/x/crypto/bcrypt"
-	// "os"
+	
 )
 
 type PostService struct {
@@ -27,7 +24,6 @@ func (service *PostService) Delete(id uint) (bool, error) {
 	return service.repo.Delete(id)
 }
 
-
-func (service *PostService) AllPosts() ([]*Post, error) {
-	return service.repo.FetchAll()
+func (service *PostService) AllPosts(page int, limit int, sort string, order string) ([]*Post, int, error) {
+	return service.repo.FetchAll(page, limit, sort, order)
 }

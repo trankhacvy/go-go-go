@@ -1,15 +1,16 @@
 package posts
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 	"strconv"
+
+	"github.com/Levi-ackerman/go-go-go/utils"
 	"github.com/gorilla/mux"
-	"go-go-go/utils"
 )
 
 type PostController struct {
-	router *mux.Router
+	router  *mux.Router
 	service *PostService
 }
 
@@ -19,14 +20,33 @@ func NewPostController(r *mux.Router, s *PostService) *PostController {
 
 func (controller *PostController) AllPosts() http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-		posts, err := controller.service.AllPosts()
+		query := req.URL.Query()
+
+		page, err := strconv.ParseInt(query.Get("page"), 10, 32)
+		if err != nil {
+			page = 1
+		}
+
+		limit, err := strconv.ParseInt(query.Get("limit"), 10, 32)
+		if err != nil {
+			limit = 10
+		}
+
+		sort := query.Get("sort")
+		order := query.Get("order")
+
+		posts, count, err := controller.service.AllPosts(int(page), int(limit), sort, order)
 		if err != nil {
 			utils.Respond(res, utils.Message(http.StatusInternalServerError, err.Error()))
 			return
 		}
 
-		resp := utils.Message(http.StatusOK, "")
-		resp["posts"] = posts
+		resp := map[string]interface{}{
+			"data":     posts,
+			"page":     page,
+			"per_page": limit,
+			"total":    count,
+		}
 		utils.Respond(res, resp)
 	})
 }
@@ -108,7 +128,7 @@ func (controller *PostController) DeletePost() http.Handler {
 			utils.Respond(res, utils.Message(http.StatusBadRequest, err.Error()))
 			return
 		}
-		
+
 		_, err = controller.service.Delete(uint(postID))
 		if err != nil {
 			utils.Respond(res, utils.Message(http.StatusInternalServerError, err.Error()))
